@@ -1,5 +1,8 @@
 import os
 import random
+from typing import Tuple
+
+from PIL import Image, ImageFilter
 
 
 def load_files_with_given_extension(
@@ -28,3 +31,58 @@ def random_idx_with_exclude(exclude, idx_range):
     return (
         random_idx_with_exclude(exclude, idx_range) if randInt in exclude else randInt
     )
+
+
+def paste_img_with_blure(
+    bg_img: Image,
+    img_to_paste: Image,
+    paste_point: tuple,
+    blur_margin: int = 25,
+) -> Image:
+    bg_mask = Image.new("L", bg_img.size, 0)
+    img_to_paste_mask = Image.new(
+        "L",
+        (img_to_paste.size[0], img_to_paste.size[1]),
+        255,
+    )
+    img_to_paste = img_to_paste.resize(
+        (img_to_paste.size[0] - blur_margin * 2, img_to_paste.size[1] - blur_margin * 2)
+    )
+
+    bg_img.paste(
+        img_to_paste, (paste_point[0] + blur_margin, paste_point[1] + blur_margin)
+    )
+    bg_mask.paste(
+        img_to_paste_mask,
+        (paste_point[0], paste_point[1]),
+    )
+    blur = bg_img.filter(ImageFilter.GaussianBlur(radius=30))
+    bg_img.paste(blur, mask=bg_mask)
+    bg_img.paste(
+        img_to_paste, (paste_point[0] + blur_margin, paste_point[1] + blur_margin)
+    )
+    return bg_img
+
+
+def create_img_with_blur_edges(img_to_paste: Image, blur_margin: int = 30) -> Image:
+    bg_image = Image.new("RGB", img_to_paste.size, (255, 255, 255))
+    img_to_paste = img_to_paste.resize(
+        (img_to_paste.size[0] - blur_margin * 2, img_to_paste.size[1] - blur_margin * 2)
+    )
+    bg_image.paste(
+        img_to_paste,
+        (blur_margin, blur_margin),
+    )
+    mask = Image.new("L", (bg_image.size[0], bg_image.size[1]), 255)
+    image_bbox = Image.new(
+        "L",
+        (
+            bg_image.size[0] - blur_margin * 2,
+            bg_image.size[1] - blur_margin * 2,
+        ),
+        0,
+    )
+    mask.paste(image_bbox, (blur_margin, blur_margin))
+    blur = bg_image.filter(ImageFilter.GaussianBlur(blur_margin / 2))
+    bg_image.paste(blur, mask=mask)
+    return bg_image
