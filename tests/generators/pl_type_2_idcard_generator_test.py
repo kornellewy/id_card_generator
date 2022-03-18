@@ -20,6 +20,7 @@ class PLType2IdcardGeneratorTests(unittest.TestCase):
     def test_generate_front_idcard(self):
         generator = PLType2IdcardGenerator()
         id_card_img = generator.generate_front_idcard()
+        id_card_img.show()
         self.assertIsInstance(id_card_img, ImageType)
 
     def test_generate_back_idcard(self):

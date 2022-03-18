@@ -1,6 +1,8 @@
 import os
 import random
 from typing import Tuple
+import yaml
+from pathlib import Path
 
 from PIL import Image, ImageFilter
 
@@ -86,3 +88,15 @@ def create_img_with_blur_edges(img_to_paste: Image, blur_margin: int = 30) -> Im
     blur = bg_image.filter(ImageFilter.GaussianBlur(blur_margin / 2))
     bg_image.paste(blur, mask=mask)
     return bg_image
+
+
+def random_digits(digits: int) -> int:
+    lower = 10 ** (digits - 1)
+    upper = 10 ** digits - 1
+    return random.randint(lower, upper)
+
+
+def read_yaml(yaml_file: Path) -> dict:
+    with open(yaml_file, "r") as stream:
+        yaml_data = yaml.safe_load(stream)
+    return yaml_data
