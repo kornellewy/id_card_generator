@@ -25,17 +25,21 @@ class BBox:
         self.check_values()
 
     def __repr__(self):
-        return f"{self.bbox_class}-{self.x_center}-{self.y_center}-{self.width}-{self.height}-{self.confidence}"
+        return f"{self.class_name}-{self.x_center}-{self.y_center}-{self.width}-{self.height}-{self.confidence}"
 
     def preproces_line(self, yolo_line: list) -> dict:
-        line = [round(float(num), 2) for num in yolo_line]
-        return line[0], line[1], line[2], line[3], line[4], line[5]
+        line = [round(float(num), 6) for num in yolo_line]
+        if len(line) == 6:
+            return line[0], line[1], line[2], line[3], line[4], line[5]
+        if len(line) == 5:
+            return line[0], line[1], line[2], line[3], line[4], 1.0
 
     def get_coco(self):
         x_top_left = self.x_center - (self.width / 2)
         y_top_left = self.y_center - (self.height / 2)
         return {
-            "bbox_class": self.bbox_class,
+            "class_name": self.class_name,
+            "class_idx": self.class_idx,
             "x_top_left": x_top_left,
             "y_top_left": y_top_left,
             "width": self.width,
@@ -54,6 +58,5 @@ class BBox:
             raise ValueError("height < 0")
         if self.confidence < 0:
             raise ValueError("confidence < 0")
-        if isinstance(self.class_name, str):
+        if not isinstance(self.class_name, str):
             raise ValueError("self.class_name isnt str")
-        

@@ -100,3 +100,9 @@ def read_yaml(yaml_file: Path) -> dict:
     with open(yaml_file, "r") as stream:
         yaml_data = yaml.safe_load(stream)
     return yaml_data
+
+
+def read_label_file(label_path: Path) -> list:
+    with open(label_path) as file:
+        lines = [line.rstrip() for line in file]
+    return lines
