@@ -7,7 +7,10 @@ import numpy as np
 
 class BaseImage:
     def __init__(
-        self, image_path: Path, label_path: Path, tags: Optional[dict] = None
+        self,
+        image_path: Path,
+        label_path: Optional[Path] = None,
+        tags: Optional[dict] = None,
     ) -> None:
         super().__init__()
         self.image_path = image_path

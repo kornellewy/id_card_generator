@@ -1,6 +1,5 @@
 import unittest
-import shutil
-from PIL.Image import Image as ImageType
+import numpy as np
 
 from id_card_generator.generators.multiple_types_generator import (
     MultipleTypesGenerator,
@@ -20,7 +19,7 @@ class PLType3IdcardGeneratorTests(unittest.TestCase):
     def test_generate_idcard(self):
         generator = MultipleTypesGenerator(dataset_path=self.dataset_path)
         id_card_img = generator.generate_idcard()
-        # self.assertIsInstance(id_card_img, ImageType)
+        self.assertIsInstance(id_card_img, np.ndarray)
 
     def tearDown(self) -> None:
         pass
