@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Tuple, Dict, List, Optional
 import random
 from copy import copy, deepcopy
+from functools import lru_cache
 
 import cv2
 import numpy as np
@@ -128,8 +129,6 @@ class MultipleTypesGenerator:
                 id_image.image[
                     y_top_left : y_top_left + height, x_top_left : x_top_left + width
                 ] = roi
-        cv2.imshow("id_image.image", id_image.image)
-        cv2.waitKey(0)
         return id_image.image
 
     def get_roi_mask(self, roi: np.ndarray) -> np.ndarray:
@@ -141,6 +140,7 @@ class MultipleTypesGenerator:
         dilate = cv2.dilate(close, dilate_kernel, iterations=1)
         return dilate
 
+    @lru_cache(maxsize=1024)
     def get_max_font_size(self, roi_height: int) -> int:
         font_size = 1
         for i in range(1, 15):
@@ -152,6 +152,7 @@ class MultipleTypesGenerator:
                 font_size = font_size - 1
                 return font_size
 
+    @lru_cache(maxsize=1024)
     def get_max_text_len(self, roi_width: int, font_size: int) -> int:
         text_len = 1
         for i in range(1, 100):
